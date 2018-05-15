@@ -1,96 +1,122 @@
 package Oblig4;
 
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 
-public class SortedTreeMap<K, V> implements ISortedTreeMap {
+public class SortedTreeMap<K extends Comparable<? super K>, V> implements ISortedTreeMap<K, V> {
+//    private static final boolean RED   = false;
+//    private static final boolean BLACK = true;
+    //    BinaryNode<Entry<K,V> > root;
 
-    //kap 25, 27
+    BST<K,V> mainTree = new BST<>();
+    Comparator<K> keyComparator;
 
+    public SortedTreeMap ( Entry<K,V> newEntry) {
+
+    }
+
+    public SortedTreeMap(Comparator<K> keyComparator) {
+        this.keyComparator = keyComparator;
+    }
 
     @Override
     public Entry min() {
-        return null;
+        BinaryNode<K,V> current = mainTree.root;
+        BinaryNode<K,V> prev = mainTree.root;
+        while(current != null) {
+            prev = current;
+            current = current.getLeftChild();
+        }
+        return prev.getEntry();
     }
 
     @Override
     public Entry max() {
+        BinaryNode<K,V> current = mainTree.root;
+        BinaryNode<K,V> prev = mainTree.root;
+        while(current != null) {
+            prev = current;
+            current = current.getRightChild();
+        }
+        return prev.getEntry();
+    }
+
+    @Override
+    public V add(K key, V value) {
         return null;
     }
 
     @Override
-    public Object add(Comparable key, Object value) {
+    public V add(Entry<K, V> entry) {
         return null;
     }
 
     @Override
-    public Object add(Entry entry) {
+    public void replace(K key, V value) throws NoSuchElementException {
+
+    }
+
+    @Override
+    public void replace(K key, BiFunction<K, V, V> f) throws NoSuchElementException {
+
+    }
+
+    @Override
+    public V remove(Object key) throws NoSuchElementException {
         return null;
     }
 
     @Override
-    public void replace(Comparable key, Object value) throws NoSuchElementException {
-
-    }
-
-    @Override
-    public void replace(Comparable key, BiFunction f) throws NoSuchElementException {
-
-    }
-
-    @Override
-    public Object remove(Object key) throws NoSuchElementException {
+    public V getValue(Object key) throws NoSuchElementException {
         return null;
     }
 
     @Override
-    public Object getValue(Object key) throws NoSuchElementException {
-        return null;
-    }
-
-    @Override
-    public boolean containsKey(Comparable key) {
+    public boolean containsKey(K key) {
         return false;
     }
 
     @Override
-    public boolean containsValue(Object value) {
+    public boolean containsValue(V value) {
         return false;
     }
 
     @Override
-    public Iterable keys() {
+    public Iterable<K> keys() {
         return null;
     }
 
     @Override
-    public Iterable values() {
+    public Iterable<V> values() {
         return null;
     }
 
     @Override
-    public Iterable<Entry> entries() {
+    public Iterable<Entry<K, V>> entries() {
         return null;
     }
 
     @Override
-    public Entry higherOrEqualEntry(Comparable key) {
+    public Entry<K, V> higherOrEqualEntry(K key) {
         return null;
     }
 
     @Override
-    public Entry lowerOrEqualEntry(Comparable key) {
+    public Entry<K, V> lowerOrEqualEntry(K key) {
         return null;
     }
 
     @Override
-    public void merge(ISortedTreeMap other) {
+    public void merge(ISortedTreeMap<K, V> other) {
 
     }
 
     @Override
-    public void removeIf(BiPredicate p) {
+    public void removeIf(BiPredicate<K, V> p) {
 
     }
 

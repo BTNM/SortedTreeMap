@@ -7,20 +7,22 @@ import java.util.function.BiPredicate;
 public interface ISortedTreeMap<K extends Comparable<? super K>, V> {
 
     /**
-     * Finds the minimum value in the map, if no value is found, returns null instead.
-     * @return minimum value
+     * Finds the minimum entry (by key) in the map, if no entry is found, returns
+     * null instead.
+     * @return minimum entry
      */
     Entry<K, V> min();
 
     /**
-     * Finds the maximum value in the map, if no value is found returns null instead.
+     * Finds the maximum entry (by key) in the map, if no key is found returns
+     * null instead.
      * @return maximum value
      */
     Entry<K, V> max();
 
     /**
      * Inserts the specified value with the specified key as a new entry into the map.
-     * If the value is already present, return the previous value, else null.
+     * If a value is already present for that key, return the previous value, else null.
      * @param key The key to be inserted
      * @param value The value to be inserted
      * @return Previous value
@@ -149,4 +151,3 @@ public interface ISortedTreeMap<K extends Comparable<? super K>, V> {
      */
     void clear();
 }
-

@@ -12,6 +12,7 @@ import fj.test.runner.PropertyTestRunner;
 
 import org.junit.runner.RunWith;
 
+import java.util.Comparator;
 import java.util.NoSuchElementException;
 
 import static fj.Equal.intEqual;
@@ -179,7 +180,7 @@ public class SortedTreeMapTest {
                             kvs.foreachDoEffect(kv -> tm.add(kv._1(), kv._2()));
 
                             String old_value = tm.add(new Entry<>(entry._1(), value));
-                            return prop(old_value.equals(entry._2()));
+                            return prop(stringEqual.eq(old_value, entry._2()));
                         })
                 )
         );
@@ -529,8 +530,29 @@ public class SortedTreeMapTest {
         });
     }
 
+
+    /**
+     * Check that we can remove entries using a predicate over the key-value pair,
+     * but don't check the order.
+     *
+     */
+    public Property remove_if_dont_check_sort() {
+        return property(isKVList, arbF(cogenInteger, arbBoolean), (kvs, predicate) -> {
+            SortedTreeMap<Integer, String> tm = new SortedTreeMap<>(intOrd.toComparator());
+            kvs.foreachDoEffect(kv -> tm.add(kv._1(), kv._2()));
+
+            tm.removeIf((key, value) -> predicate.f(key));
+
+            Set<Integer> keys = Set.iteratorSet(intOrd, tm.keys().iterator());
+            Set<Integer> kept = Set.iterableSet(intOrd, kvs.map(P2::_1).filter(key -> !predicate.f(key)));
+
+            return prop(keys.equals(kept));
+        });
+    }
+
     /**
      * Check that we can remove entries using a predicate over the key-value pair.
+     * Also check that the order is correct.
      *
      */
     public Property remove_if() {
@@ -541,9 +563,9 @@ public class SortedTreeMapTest {
             tm.removeIf((key, value) -> predicate.f(key));
 
             List<Integer> keys = fromIterator(tm.keys().iterator());
-            List<Integer> sorted = kvs.map(P2::_1).filter(key -> !predicate.f(key)).sort(intOrd);
+            List<Integer> kept_sorted = kvs.map(P2::_1).filter(key -> !predicate.f(key)).sort(intOrd);
 
-            return prop(intListEqual.eq(keys, sorted));
+            return prop(intListEqual.eq(keys, kept_sorted));
         });
     }
 
