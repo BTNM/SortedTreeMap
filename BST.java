@@ -1,13 +1,18 @@
 package Oblig4;
 
+import java.util.List;
+
 public class BST<K extends Comparable<? super K>,V> {
-    BinaryNode<K,V> root;
+    private BinaryNode<K,V> root;
 
 //    public BST (T rootData) {
 //        root = new BinaryNode<>(rootData);
 //    }
 
-    public BST () { }
+    public BST () {
+
+    }
+
     public BST (Entry<K,V> newEntry) {
         root.setEntry(newEntry);
     }
@@ -66,9 +71,14 @@ public class BST<K extends Comparable<? super K>,V> {
                 nodeN = rotateRightLeft(nodeN);
             }
         }
-
         return nodeN;
     }
+
+//    public boolean contain (K key) {
+//
+//
+//    }
+
 
     public Entry<K, V> add (Entry<K, V> newEntry) {
         Entry<K, V> result = null;
@@ -111,6 +121,11 @@ public class BST<K extends Comparable<? super K>,V> {
         return result;
     }
 
+//    public Entry<K, V> remove (Entry<K, V> entry) {
+//
+//    }
+
+
     public Entry<K,V> remove(Entry<K,V> entry) {
         ReturnObject oldEntry = new ReturnObject(null);
         BinaryNode<K, V> newRoot = removeEntry(getRootNode(), entry, oldEntry);
@@ -132,10 +147,12 @@ public class BST<K extends Comparable<? super K>,V> {
                 BinaryNode<K, V> leftChild = rootNode.getLeftChild();
                 BinaryNode<K, V> subtreeRoot = removeEntry(leftChild, entry, oldEntry);
                 rootNode.setLeftChild(subtreeRoot);
+//                rootNode.setLeftChild(rebalance(subtreeRoot));
             } else {
                 BinaryNode<K, V> rightChild = rootNode.getRightChild();
                 BinaryNode<K, V> subtreeRoot = removeEntry(rightChild, entry, oldEntry);
                 rootNode.setRightChild(subtreeRoot);
+//                rootNode.setRightChild(rebalance(subtreeRoot));
             }
         }
         return rootNode;
@@ -230,10 +247,23 @@ public class BST<K extends Comparable<? super K>,V> {
 //    public int getHeight() {
 //        return root.getHeight();
 //    }
-    public int getNumberOfNodes() {
-        return root.getNumberOfNodes();
+//    public int getNumberOfNodes() {
+//        return root.getNumberOfNodes();
+//    }
+    public int size() {
+        return size(root);
     }
-    public Entry<K,V> getRoot() throws Exception {
+    private int size(BinaryNode<K,V> node) {
+        if (node == null || node.getEntry() == null) {
+            return (0);
+        } else {
+            return (size(node.getLeftChild()) + size(node.getRightChild()) + 1 );
+        }
+
+    }
+
+
+    public Entry<K,V> getRootEntry() throws Exception {
         if (isEmpty()) {
             throw new Exception();
         } else {
@@ -256,18 +286,48 @@ public class BST<K extends Comparable<? super K>,V> {
         return root;
     }
 
-    public void inorderTraverse() {
+    public void inOrderTraverse() {
         inorderTraverse(root);
     }
     private void inorderTraverse(BinaryNode<K,V> node) {
-        if (node != null) {
+        if (node != null && node.getEntry() != null) {
             inorderTraverse(node.getLeftChild());
             System.out.println(node.getEntry().key + " Value "+node.getEntry().value);
             inorderTraverse(node.getRightChild());
         }
 
     }
+    public List<K> traverseInOrderKeys(BinaryNode<K, V> node, List<K> keyList) {
+        if (node != null && node.getEntry() != null) {
+            traverseInOrderKeys(node.getLeftChild(),keyList);
+//            System.out.println(node.getEntry().key + " Value "+node.getEntry().value);
+            keyList.add(node.getEntry().key);
+            traverseInOrderKeys(node.getRightChild(),keyList);
+        }
+        return keyList;
+    }
 
+    public List<V> traverseInOrderValues(BinaryNode<K, V> node, List<V> list) {
+
+        if (node != null && node.getEntry() != null) {
+            traverseInOrderValues(node.getLeftChild(),list);
+//            System.out.println(node.getEntry().key + " Value "+node.getEntry().value);
+            list.add(node.getEntry().value);
+            traverseInOrderValues(node.getRightChild(),list);
+        }
+        return list;
+    }
+
+    public List<Entry<K,V>> traverseInOrderEntries(BinaryNode<K, V> node, List<Entry<K,V>> list) {
+
+        if (node != null && node.getEntry() != null) {
+            traverseInOrderEntries(node.getLeftChild(), list );
+//            System.out.println(node.getEntry().key + " Value "+node.getEntry().value);
+            list.add(node.getEntry());
+            traverseInOrderEntries(node.getRightChild(), list);
+        }
+        return list;
+    }
 
 
 

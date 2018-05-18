@@ -67,23 +67,23 @@ public class BinaryNode<K,V> {
         return (leftChild == null) && (rightChild == null);
     }
 
-    /**
-     * Counts the nodes in the subtree rooted at this node
-     * @return The number of nodes in the subtree rooted at this node
-     */
-    public int getNumberOfNodes() {
-        int leftNumber = 0;
-        int rightNumber = 0;
-        if (leftChild != null) {
-            leftNumber = leftChild.getNumberOfNodes();
-        }
-        if (rightChild != null) {
-            rightNumber = rightChild.getNumberOfNodes();
-        }
-
-        return 1 + leftNumber + rightNumber;
-
-    }
+//    /**
+//     * Counts the nodes in the subtree rooted at this node
+//     * @return The number of nodes in the subtree rooted at this node
+//     */
+//    public int getNumberOfNodes() {
+//        int leftNumber = 0;
+//        int rightNumber = 0;
+//        if (leftChild != null) {
+//            leftNumber = leftChild.getNumberOfNodes();
+//        }
+//        if (rightChild != null) {
+//            rightNumber = rightChild.getNumberOfNodes();
+//        }
+//
+//        return 1 + leftNumber + rightNumber;
+//
+//    }
 
     public int getHeight() {
         return getHeight(this);
