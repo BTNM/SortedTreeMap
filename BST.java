@@ -48,7 +48,6 @@ public class BST<K extends Comparable<? super K>,V> {
      *  right subtree of N's right child - left rotation
      *  left subtree of N's right child - rightLeft rotation
      */
-
     private BinaryNode<K, V> rebalance (BinaryNode<K, V> nodeN) {
         int heightDifference = getHeightDifference(nodeN);
 
@@ -121,16 +120,54 @@ public class BST<K extends Comparable<? super K>,V> {
         return result;
     }
 
-//    public Entry<K, V> remove (Entry<K, V> entry) {
+//    public void remove2 (K key) {
+//        root = remove2(root, key);
+//    }
 //
+//    private BinaryNode<K, V> remove2 (BinaryNode<K, V> node, K key) {
+//        if (node == null) {
+//            return null;
+//        }
+//        if ( key.compareTo(node.getEntry().key) < 0 ) {
+//            node.setLeftChild(remove2(node.getLeftChild(), key));
+//            return rebalance(node);
+//        } else if (key.compareTo(node.getEntry().key) > 0 ){
+//            node.setRightChild(remove2(node.getRightChild(), key));
+//            return rebalance(node);
+//        } else {
+//            // 0 children
+//            if (!node.hasLeftChild() && !node.hasRightChild()) {
+//                return null;
+//            }
+//            if (!node.hasLeftChild()) {
+//                return node.getRightChild();
+//            }
+//            if (!node.hasRightChild()) {
+//                return node.getLeftChild();
+//            }
+//
+//            K smallestKey = smallest(node.getRightChild());
+//            node.setEntry(new Entry<>(smallestKey, node.getEntry().value ) );
+//            node.setRightChild(remove2(node.getRightChild(),smallestKey ));
+//            return rebalance(node);
+//
+//        }
+//
+//    }
+//
+//    private K smallest (BinaryNode<K, V> node) {
+//        if (node.getLeftChild() == null) {
+//            return node.getEntry().key;
+//        }
+//        return smallest(node);
 //    }
 
 
     public Entry<K,V> remove(Entry<K,V> entry) {
         ReturnObject oldEntry = new ReturnObject(null);
         BinaryNode<K, V> newRoot = removeEntry(getRootNode(), entry, oldEntry);
-//        setRootNode(newRoot);
-        setRootNode(rebalance(newRoot));
+        setRootNode(newRoot);
+//        setRootNode(rebalance(newRoot));
 
         return oldEntry.getOldEntry();
     }
@@ -147,11 +184,13 @@ public class BST<K extends Comparable<? super K>,V> {
                 BinaryNode<K, V> leftChild = rootNode.getLeftChild();
                 BinaryNode<K, V> subtreeRoot = removeEntry(leftChild, entry, oldEntry);
                 rootNode.setLeftChild(subtreeRoot);
+//                return rebalance(rootNode);
 //                rootNode.setLeftChild(rebalance(subtreeRoot));
             } else {
                 BinaryNode<K, V> rightChild = rootNode.getRightChild();
                 BinaryNode<K, V> subtreeRoot = removeEntry(rightChild, entry, oldEntry);
                 rootNode.setRightChild(subtreeRoot);
+//                return rebalance(rootNode);
 //                rootNode.setRightChild(rebalance(subtreeRoot));
             }
         }
@@ -169,6 +208,8 @@ public class BST<K extends Comparable<? super K>,V> {
             rootNode.setEntry(largestNode.getEntry() );
             // remove node with largest entry in left subtree
             rootNode.setLeftChild(removeLargest(leftSubtreeRoot) );
+            // removing may give an unbalanced tree
+//            return rebalance(rootNode);
         }
         // rootNode has at most 1 child
         else if (rootNode.hasRightChild() ) {

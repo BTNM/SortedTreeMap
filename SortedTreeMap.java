@@ -24,6 +24,10 @@ public class SortedTreeMap<K extends Comparable<? super K>, V> implements ISorte
     public Entry<K, V> min() {
         BinaryNode<K,V> current = mainTree.getRootNode();
         BinaryNode<K,V> prev = mainTree.getRootNode();
+        if (current == null || prev == null) {
+            return null;
+        }
+
         while(current != null) {
             prev = current;
             current = current.getLeftChild();
@@ -32,9 +36,13 @@ public class SortedTreeMap<K extends Comparable<? super K>, V> implements ISorte
     }
 
     @Override
-    public Entry max() {
+    public Entry<K, V> max() {
         BinaryNode<K,V> current = mainTree.getRootNode();
         BinaryNode<K,V> prev = mainTree.getRootNode();
+        if (current == null || prev == null) {
+            return null;
+        }
+
         while(current != null) {
             prev = current;
             current = current.getRightChild();
@@ -73,9 +81,9 @@ public class SortedTreeMap<K extends Comparable<? super K>, V> implements ISorte
     public void replace(K key, V value) throws NoSuchElementException {
         BinaryNode<K, V> current = mainTree.getRootNode();
 
-//        if (!containsKey(key)) {
-//            throw new NoSuchElementException();
-//        }
+        if (!containsKey(key)) {
+            throw new NoSuchElementException();
+        }
 
         while (current != null) {
             if (keyComparator.compare(key,current.getEntry().key) == 0) {
@@ -117,27 +125,30 @@ public class SortedTreeMap<K extends Comparable<? super K>, V> implements ISorte
 
     }
 
+
     @Override
     public V remove(Object key) throws NoSuchElementException {
-//        if (!(key instanceof K)) {
-//            throw new NoSuchElementException();
-//        }
+        if (!containsKey((K) key)) {
+            throw new NoSuchElementException();
+        }
 
         BinaryNode<K, V> removed = removeRecursive(mainTree.getRootNode(), (K) key);
         return removed.getEntry().value;
     }
+
     private BinaryNode<K, V> removeRecursive(BinaryNode<K,V> current, K key) {
         if (current == null) {
             throw new NoSuchElementException();
         }
 
-        if (key.equals(current.getEntry().key)) {
-            mainTree.remove(current.getEntry());
+//        if (key.equals(current.getEntry().key)) {
+        if (keyComparator.compare(key, current.getEntry().key) == 0 ) {
+//            mainTree.remove(current.getEntry());
+           Entry<K, V> tempEntry = mainTree.remove(current.getEntry());
+           return new BinaryNode<>(tempEntry);
         }
-
 //        if (key.compareTo(current.getEntry().key) < 0 )
-        if (keyComparator.compare(key, current.getEntry().key) < 0 )
-        {
+        else if (keyComparator.compare(key, current.getEntry().key) < 0 ) {
             current.setLeftChild((removeRecursive(current.getLeftChild(), key)));
         } else {
             current.setRightChild((removeRecursive(current.getRightChild(), key)));
@@ -277,26 +288,50 @@ public class SortedTreeMap<K extends Comparable<? super K>, V> implements ISorte
 
     @Override
     public Entry<K, V> lowerOrEqualEntry(K key) {
-//        if (mainTree.getRootNode()==null) {
+        BinaryNode<K,V> prev = mainTree.getRootNode();
+        BinaryNode<K,V> current = mainTree.getRootNode();
+
+//        if (prev == null ) {
 //            return null;
 //        }
-        BinaryNode<K,V> current = mainTree.getRootNode();
-        BinaryNode<K,V> prev = mainTree.getRootNode();
-        if (prev == null) {
-            return null;
-        }
-//        && node.getEntry() != null
-        while(current != null ) {
-            prev = current;
-            if (keyComparator.compare(key,current.getEntry().key) == 0) {
-                return current.getEntry();
-            } else if (keyComparator.compare(key,current.getEntry().key) < 0) {
-                current = current.getLeftChild();
-            }
-//            else if (keyComparator.compare(key,current.getEntry().key) > 0) {
-//                current = current.getRightChild();
+
+//        while (current != null) {
+//            if (keyComparator.compare(key,current.getEntry().key) == 0) {
+//                System.out.println("found key:"+ current.getEntry().key);
+//                return current.getEntry();
 //            }
+//            else if (keyComparator.compare(key,current.getEntry().key) < 0) {
+//                System.out.println("prev key: "+current.getEntry().key);
+//                current = current.getLeftChild();
+//                System.out.println("current key: "+current.getEntry().key);
+//            }
+//
+//        }
+
+
+
+        while(current != null ) {
+            if (size() == 1) {
+                if (keyComparator.compare(key,current.getEntry().key) == 0) {
+                    return current.getEntry();
+                }
+                else if (keyComparator.compare(key,current.getEntry().key) < 0) {
+                    current = current.getLeftChild();
+                }
+            } else {
+                prev = current;
+                if (keyComparator.compare(key,current.getEntry().key) == 0) {
+                    return current.getEntry();
+                }
+                else if (keyComparator.compare(key,current.getEntry().key) < 0) {
+                    current = current.getLeftChild();
+                }
+//              else if (keyComparator.compare(key,current.getEntry().key) > 0) {
+//                  current = current.getRightChild();
+//              }
+            }
         }
+
         return prev.getEntry();
     }
 
