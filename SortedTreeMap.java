@@ -131,9 +131,11 @@ public class SortedTreeMap<K extends Comparable<? super K>, V> implements ISorte
         if (!containsKey((K) key)) {
             throw new NoSuchElementException();
         }
+//        return mainTree.remove2((K) key).getEntry().value;
+        return mainTree.remove3((K) key).getEntry().value;
 
-        BinaryNode<K, V> removed = removeRecursive(mainTree.getRootNode(), (K) key);
-        return removed.getEntry().value;
+//        BinaryNode<K, V> removed = removeRecursive(mainTree.getRootNode(), (K) key);
+//        return removed.getEntry().value;
     }
 
     private BinaryNode<K, V> removeRecursive(BinaryNode<K,V> current, K key) {
@@ -144,8 +146,28 @@ public class SortedTreeMap<K extends Comparable<? super K>, V> implements ISorte
 //        if (key.equals(current.getEntry().key)) {
         if (keyComparator.compare(key, current.getEntry().key) == 0 ) {
 //            mainTree.remove(current.getEntry());
-           Entry<K, V> tempEntry = mainTree.remove(current.getEntry());
-           return new BinaryNode<>(tempEntry);
+
+//           Entry<K, V> tempEntry = mainTree.remove(current.getEntry());
+//           return new BinaryNode<>(tempEntry);
+
+//            return mainTree.remove3(key);
+
+//            return mainTree.remove2(key);
+
+
+//            if (current.getLeftChild() == null && current.getRightChild() == null) {
+//                return null;
+//            }
+//            if (current.getRightChild() == null) {
+//                return current.getRightChild();
+//            }
+//            if (current.getLeftChild() == null) {
+//                return current.getRightChild();
+//            }
+//            BinaryNode<K, V> tempNode = findSmallestValue(current.getRightChild());
+//            current.setEntry(tempNode.getEntry());
+//            current.setRightChild(removeRecursive(current.getRightChild(), key));
+//            return current;
         }
 //        if (key.compareTo(current.getEntry().key) < 0 )
         else if (keyComparator.compare(key, current.getEntry().key) < 0 ) {
@@ -155,6 +177,15 @@ public class SortedTreeMap<K extends Comparable<? super K>, V> implements ISorte
         }
 
         return current;
+    }
+
+    private BinaryNode<K, V> findSmallestValue (BinaryNode<K, V> node) {
+        if (node.getLeftChild() == null ) {
+            return node;
+        } else {
+            return findSmallestValue(node.getLeftChild());
+        }
+//        return node.getLeftChild() == null ? node : findSmallestValue(node.getLeftChild());
     }
 
     @Override
@@ -394,7 +425,7 @@ public class SortedTreeMap<K extends Comparable<? super K>, V> implements ISorte
 
     @Override
     public void merge(ISortedTreeMap<K, V> other) {
-        ArrayList<BinaryNode<K,V>> tempList = new ArrayList<>();
+//        ArrayList<BinaryNode<K,V>> tempList = new ArrayList<>();
 //        tempList = storeInOrderTree((SortedTreeMap<K,V>)other, tempList);
 //        BinaryNode<K,V> root = mainTree.getRootNode();
         Iterator<Entry<K,V>> itrEntries= other.entries().iterator();

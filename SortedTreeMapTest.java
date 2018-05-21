@@ -572,31 +572,31 @@ public class SortedTreeMapTest {
     /**
      * Check that all new keys are in the map after merging with other tree.
      */
-//    public Property merge_other() {
-//        return property(arbKVList, arbKVList, (kvs1, kvs2) -> {
-//            SortedTreeMap<Integer, String> tm1 = new SortedTreeMap<>(intOrd.toComparator());
-//            SortedTreeMap<Integer, String> tm2 = new SortedTreeMap<>(intOrd.toComparator());
-//
-//            kvs1.foreachDoEffect(kv -> tm1.add(kv._1(), kv._2()));
-//            kvs2.foreachDoEffect(kv -> tm2.add(kv._1(), kv._2()));
-//
-//            tm1.merge(tm2);
-//
-//            HashMap<Integer, String> test_map = HashMap.iterableHashMap(kvs1);
-//            kvs2.foreachDoEffect(kv -> test_map.set(kv._1(), kv._2()));
-//
-//            List<Entry<Integer, String>> entries = fromIterator(tm1.entries().iterator());
-//
-//            // Check that for all entries in the map that they are the same in the hashmap.
-//            return prop(entries.forall(e -> {
-//                Integer key = e.key;
-//                String value = e.value;
-//                // Check if we get the same key from the tree map as from the input.
-//                String input = test_map.get(key).toNull();
-//                return value.equals(input);
-//            }));
-//        });
-//    }
+    public Property merge_other() {
+        return property(arbKVList, arbKVList, (kvs1, kvs2) -> {
+            SortedTreeMap<Integer, String> tm1 = new SortedTreeMap<>(intOrd.toComparator());
+            SortedTreeMap<Integer, String> tm2 = new SortedTreeMap<>(intOrd.toComparator());
+
+            kvs1.foreachDoEffect(kv -> tm1.add(kv._1(), kv._2()));
+            kvs2.foreachDoEffect(kv -> tm2.add(kv._1(), kv._2()));
+
+            tm1.merge(tm2);
+
+            HashMap<Integer, String> test_map = HashMap.iterableHashMap(kvs1);
+            kvs2.foreachDoEffect(kv -> test_map.set(kv._1(), kv._2()));
+
+            List<Entry<Integer, String>> entries = fromIterator(tm1.entries().iterator());
+
+            // Check that for all entries in the map that they are the same in the hashmap.
+            return prop(entries.forall(e -> {
+                Integer key = e.key;
+                String value = e.value;
+                // Check if we get the same key from the tree map as from the input.
+                String input = test_map.get(key).toNull();
+                return value.equals(input);
+            }));
+        });
+    }
 
     /**
      * Check that we can find the entry that is equal or has a higher key than

@@ -1,6 +1,7 @@
 package Oblig4;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class BST<K extends Comparable<? super K>,V> {
     private BinaryNode<K,V> root;
@@ -73,6 +74,26 @@ public class BST<K extends Comparable<? super K>,V> {
         return nodeN;
     }
 
+    public int getHeightDifference (BinaryNode<K,V> node) {
+        int leftHeight = 0;
+        int rightHeight = 0;
+
+        if (node.getLeftChild() != null) {
+            leftHeight = node.getLeftChild().getHeight();
+        } else {
+            leftHeight = 0;
+        }
+        if (node.getRightChild() != null) {
+            rightHeight = node.getRightChild().getHeight();
+        } else {
+            rightHeight = 0;
+        }
+
+        return leftHeight - rightHeight;
+
+//        return node.getLeftChild().getHeight() - node.getRightChild().getHeight();
+    }
+
 //    public boolean contain (K key) {
 //
 //
@@ -120,47 +141,84 @@ public class BST<K extends Comparable<? super K>,V> {
         return result;
     }
 
-//    public void remove2 (K key) {
-//        root = remove2(root, key);
-//    }
-//
-//    private BinaryNode<K, V> remove2 (BinaryNode<K, V> node, K key) {
-//        if (node == null) {
-//            return null;
-//        }
-//        if ( key.compareTo(node.getEntry().key) < 0 ) {
-//            node.setLeftChild(remove2(node.getLeftChild(), key));
-//            return rebalance(node);
-//        } else if (key.compareTo(node.getEntry().key) > 0 ){
-//            node.setRightChild(remove2(node.getRightChild(), key));
-//            return rebalance(node);
-//        } else {
-//            // 0 children
-//            if (!node.hasLeftChild() && !node.hasRightChild()) {
-//                return null;
-//            }
-//            if (!node.hasLeftChild()) {
-//                return node.getRightChild();
-//            }
+    public BinaryNode<K, V> remove2 (K key) {
+        return remove2(root, key);
+    }
+
+    private BinaryNode<K, V> remove2 (BinaryNode<K, V> node, K key) {
+        if (node == null) {
+            return null;
+        }
+        if ( key.compareTo(node.getEntry().key) < 0 ) {
+            node.setLeftChild(remove2(node.getLeftChild(), key));
+            return rebalance(node);
+        } else if (key.compareTo(node.getEntry().key) > 0 ){
+            node.setRightChild(remove2(node.getRightChild(), key));
+            return rebalance(node);
+        } else {
+            // 0 children
+//            if (!node.hasLeftChild() && !node.hasRightChild() ) {
+            if ( node.getLeftChild() == null && node.getRightChild() == null ) {
+                return null;
+            }
+//            if (!node.hasLeftChild() ) {
+            if (node.getLeftChild() == null ) {
+                return node.getRightChild();
+            }
 //            if (!node.hasRightChild()) {
-//                return node.getLeftChild();
-//            }
-//
-//            K smallestKey = smallest(node.getRightChild());
-//            node.setEntry(new Entry<>(smallestKey, node.getEntry().value ) );
-//            node.setRightChild(remove2(node.getRightChild(),smallestKey ));
-//            return rebalance(node);
-//
-//        }
-//
-//    }
-//
-//    private K smallest (BinaryNode<K, V> node) {
-//        if (node.getLeftChild() == null) {
-//            return node.getEntry().key;
-//        }
-//        return smallest(node);
-//    }
+            if (node.getRightChild() == null ) {
+                return node.getLeftChild();
+            }
+
+            Entry<K,V> smallest = smallest(node.getRightChild());
+            node.setEntry(smallest);
+            node.setRightChild(remove2(node.getRightChild(),smallest.key ));
+            return rebalance(node);
+
+        }
+
+    }
+
+    private Entry<K,V> smallest (BinaryNode<K, V> node) {
+        if (node.getLeftChild() == null) {
+            return node.getEntry();
+        }
+        return smallest(node.getLeftChild());
+    }
+
+
+    public BinaryNode<K, V> remove3 (K key) {
+        BinaryNode<K, V> rootNode = getRootNode();
+        BinaryNode<K, V> removedNode = removeNode(rootNode, key);
+//        setRootNode(removedNode);
+
+        return removedNode;
+    }
+
+    private BinaryNode<K, V> removeNode(BinaryNode<K, V> rootNode, K key) {
+        if (root == null) {
+            throw new NoSuchElementException();
+        }
+
+        int compared = key.compareTo(rootNode.getEntry().key);
+
+        if (compared < 0) {
+            rootNode.setLeftChild(removeNode(rootNode.getLeftChild(),key));
+        } else if (compared > 0 ) {
+            rootNode.setRightChild(removeNode(rootNode.getRightChild(), key));
+        } else if (rootNode.getLeftChild() != null && rootNode.getRightChild() != null) {
+            rootNode.setEntry(smallest(rootNode.getRightChild() ));
+            rootNode.setRightChild(removeNode(rootNode, key));
+        } else {
+            if (rootNode.getLeftChild() != null) {
+                rootNode = rootNode.getLeftChild();
+            } else {
+                rootNode = rootNode.getRightChild();
+            }
+        }
+        return rebalance(rootNode);
+
+    }
 
 
     public Entry<K,V> remove(Entry<K,V> entry) {
@@ -255,27 +313,6 @@ public class BST<K extends Comparable<? super K>,V> {
         }
     }
 
-
-
-    public int getHeightDifference (BinaryNode<K,V> node) {
-        int leftHeight = 0;
-        int rightHeight = 0;
-
-        if (node.getLeftChild() != null) {
-            leftHeight = node.getLeftChild().getHeight();
-        } else {
-            leftHeight = 0;
-        }
-        if (node.getRightChild() != null) {
-            rightHeight = node.getRightChild().getHeight();
-        } else {
-            rightHeight = 0;
-        }
-
-        return leftHeight - rightHeight;
-
-//        return node.getLeftChild().getHeight() - node.getRightChild().getHeight();
-    }
 
 //    public int getHeight(BinaryNode node) {
 //        if (node == null) {
