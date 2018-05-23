@@ -308,22 +308,53 @@ public class SortedTreeMap<K extends Comparable<? super K>, V> implements ISorte
 
     @Override
     public Entry<K, V> higherOrEqualEntry(K key) {
-        BinaryNode<K,V> current = mainTree.getRootNode();
-        BinaryNode<K,V> prev = mainTree.getRootNode();
+        Iterator<Entry<K, V>> entryItr = entries().iterator();
+        Iterator<Entry<K, V>> entryItr2 = entries().iterator();
+        Entry<K,V> current = null;
+        Entry<K,V> prev = null;
 
-        while(current != null) {
-            prev = current;
-            if (keyComparator.compare(key,current.getEntry().key) == 0) {
-                return current.getEntry();
-            }
-//            else if (keyComparator.compare(key,current.getEntry().key) < 0) {
-//                current = current.getLeftChild();
-//            }
-            else if (keyComparator.compare(key,current.getEntry().key) > 0) {
-                current = current.getRightChild();
+        while (entryItr.hasNext()) {
+            current = entryItr.next();
+            if (key.compareTo(current.key) == 0 ){
+                return current;
             }
         }
-        return prev.getEntry();
+
+        while (entryItr2.hasNext()  ) {
+            current = entryItr2.next();
+            if ((key.compareTo(current.key) < 0 ) ){
+                return current;
+//                if (entryItr2.hasNext()) {
+//                    return current;
+//                } else {
+//                    return null;
+//                }
+
+            }
+//            else if (!entryItr2.hasNext() ) {
+//                return null;
+//            }
+//            prev = current;
+        }
+
+        return null;
+
+//        BinaryNode<K,V> current = mainTree.getRootNode();
+//        BinaryNode<K,V> prev = mainTree.getRootNode();
+//
+//        while(current != null) {
+//            prev = current;
+//            if (keyComparator.compare(key,current.getEntry().key) == 0) {
+//                return current.getEntry();
+//            }
+////            else if (keyComparator.compare(key,current.getEntry().key) < 0) {
+////                current = current.getLeftChild();
+////            }
+//            else if (keyComparator.compare(key,current.getEntry().key) > 0) {
+//                current = current.getRightChild();
+//            }
+//        }
+//        return prev.getEntry();
     }
 
     @Override
@@ -335,7 +366,7 @@ public class SortedTreeMap<K extends Comparable<? super K>, V> implements ISorte
         while (entryItr.hasNext()) {
             current = entryItr.next();
             if (key.compareTo(current.key) == 0 ){
-                System.out.println("double check current: "+current.key);
+//                System.out.println("double check current: "+current.key);
                 return current;
             }
 //            if (keyComparator.compare(key, current.key) == 0) {
@@ -346,28 +377,16 @@ public class SortedTreeMap<K extends Comparable<? super K>, V> implements ISorte
 
         Iterator<Entry<K, V>> entryItr2 = entries().iterator();
         while (entryItr2.hasNext()  ) {
-//            System.out.println("has: "+temp.next().key );
-//            queue.enqueue(temp.next());
             current = entryItr2.next();
-            System.out.println("key: "+ key);
-            System.out.println("check Current key2: "+ current.key);
+
             if ((key.compareTo(current.key) < 0 ) ){
-                System.out.println("triple check current: "+current.key);
-//                System.out.println("triple check prev: "+prev.key);
-//                if (prev != null) {
-//                    System.out.println("prev: "+ prev.key);
-//                    return prev;
-//                }
                 return prev;
             }
             else if (!entryItr2.hasNext() ) {
                 return current;
             }
             prev = current;
-
         }
-
-
 
         return null;
     }

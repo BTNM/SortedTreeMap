@@ -47,6 +47,30 @@ public class testTree  {
 
         assertEquals(new Integer(25), temp2.key);
 
+    }
+
+    @Test
+    public void checkHigherOrEqual() {
+        SortedTreeMap<Integer, String> treeMap = new SortedTreeMap<Integer, String>(new Entry<>(24,"twentyfour"));
+        treeMap.add(23,"twentythree");
+        treeMap.add(25,"twentythree");
+        treeMap.add(30,"twentyOne");
+        treeMap.add(27,"twentyOne");
+
+        Iterator<Entry<Integer,String>> itr = treeMap.entries().iterator();
+        while (itr.hasNext()) {
+            System.out.println("in itr: "+itr.next().key);
+        }
+
+        Entry<Integer, String> temp = treeMap.higherOrEqualEntry(24);
+//        System.out.println("key: "+temp.key+" value: "+ temp.value);
+        assertEquals(new Integer(24), temp.key);
+
+        Entry<Integer, String> temp2 = treeMap.higherOrEqualEntry(26);
+        System.out.println("key21: "+temp2.key+" value21: "+ temp2.value);
+//
+        assertEquals(new Integer(27), temp2.key);
 
     }
+
 }
