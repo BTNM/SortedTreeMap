@@ -5,8 +5,16 @@ import java.util.NoSuchElementException;
 
 public class BST<K extends Comparable<? super K>,V> {
     private BinaryNode<K,V> root;
+    private BinaryNode<K, V> tempBinaryNode;
 
-//    public BST (T rootData) {
+    public BinaryNode<K, V> getTempBinaryNode() {
+        return tempBinaryNode;
+    }
+
+    public void setTempBinaryNode(BinaryNode<K, V> tempBinaryNode) {
+        this.tempBinaryNode = tempBinaryNode;
+    }
+    //    public BST (T rootData) {
 //        root = new BinaryNode<>(rootData);
 //    }
 
@@ -141,6 +149,9 @@ public class BST<K extends Comparable<? super K>,V> {
         return result;
     }
 
+
+
+
     public BinaryNode<K, V> remove2 (K key) {
         return remove2(root, key);
     }
@@ -203,9 +214,12 @@ public class BST<K extends Comparable<? super K>,V> {
         int compared = key.compareTo(rootNode.getEntry().key);
 
         if (compared < 0) {
+
             rootNode.setLeftChild(removeNode(rootNode.getLeftChild(),key));
         } else if (compared > 0 ) {
-            rootNode.setRightChild(removeNode(rootNode.getRightChild(), key));
+            BinaryNode<K, V> removed = removeNode(rootNode.getRightChild(), key);
+            rootNode.setRightChild(removed);
+
         } else if (rootNode.getLeftChild() != null && rootNode.getRightChild() != null) {
             rootNode.setEntry(smallest(rootNode.getRightChild() ));
             rootNode.setRightChild(removeNode(rootNode, key));
@@ -221,35 +235,79 @@ public class BST<K extends Comparable<? super K>,V> {
     }
 
 
-    public Entry<K,V> remove(Entry<K,V> entry) {
-        ReturnObject oldEntry = new ReturnObject(null);
-        BinaryNode<K, V> newRoot = removeEntry(getRootNode(), entry, oldEntry);
-        setRootNode(newRoot);
-//        setRootNode(rebalance(newRoot));
+//    public Entry<K,V> remove(Entry<K,V> entry) {
+//        ReturnObject oldEntry = new ReturnObject(null);
+//        BinaryNode<K, V> newRoot = removeEntry(getRootNode(), entry, oldEntry);
+//        setRootNode(newRoot);
+////        setRootNode(rebalance(newRoot));
+//
+//        return oldEntry.getOldEntry();
+//    }
+//
+//    private BinaryNode<K, V> removeEntry(BinaryNode<K, V> rootNode, Entry<K,V> entry, ReturnObject oldEntry) {
+//        if (rootNode != null) {
+//            Entry<K,V> rootData = rootNode.getEntry();
+//            int compared = entry.key.compareTo(rootData.key);
+//
+//            if (compared == 0) {
+//                oldEntry.setOldEntry(rootData);
+//                rootNode = removeFromRoot(rootNode);
+//            } else if (compared < 0) {
+//                BinaryNode<K, V> leftChild = rootNode.getLeftChild();
+//                BinaryNode<K, V> subtreeRoot = removeEntry(leftChild, entry, oldEntry);
+//                rootNode.setLeftChild(subtreeRoot);
+////                return rebalance(rootNode);
+////                rootNode.setLeftChild(rebalance(subtreeRoot));
+//            } else {
+//                BinaryNode<K, V> rightChild = rootNode.getRightChild();
+//                BinaryNode<K, V> subtreeRoot = removeEntry(rightChild, entry, oldEntry);
+//                rootNode.setRightChild(subtreeRoot);
+////                return rebalance(rootNode);
+////                rootNode.setRightChild(rebalance(subtreeRoot));
+//            }
+//        }
+//        return rootNode;
+//    }
 
-        return oldEntry.getOldEntry();
+    public BinaryNode<K, V> removeOld2(K key) {
+        BinaryNode<K, V> newRoot = removeEntry2(getRootNode(), key);
+//        setRootNode(newRoot);
+        return newRoot;
+
+//        if (tempBinaryNode != null ) {
+//            return tempBinaryNode;
+//        } else {
+//            return null;
+//        }
+
+//        return tempBinaryNode != null ? tempBinaryNode : null;
     }
 
-    private BinaryNode<K, V> removeEntry(BinaryNode<K, V> rootNode, Entry<K,V> entry, ReturnObject oldEntry) {
+    private BinaryNode<K, V> removeEntry2(BinaryNode<K, V> rootNode, K key) {
         if (rootNode != null) {
             Entry<K,V> rootData = rootNode.getEntry();
-            int compared = entry.key.compareTo(rootData.key);
+            Entry<K,V> removed;
+            int compared = key.compareTo(rootData.key);
 
             if (compared == 0) {
-                oldEntry.setOldEntry(rootData);
+//                tempBinaryNode.setEntry(rootData);
+//                NodePair<BinaryNode<K,V>> temp;
+                removed = rootNode.getEntry();
+                System.out.println(removed.key);
                 rootNode = removeFromRoot(rootNode);
+                System.out.println(rootNode.getEntry().key);
+//                if (rootNode != null) {
+//                    rebalance(rootNode);
+//                }
+                return new BinaryNode<>(removed);
             } else if (compared < 0) {
                 BinaryNode<K, V> leftChild = rootNode.getLeftChild();
-                BinaryNode<K, V> subtreeRoot = removeEntry(leftChild, entry, oldEntry);
+                BinaryNode<K, V> subtreeRoot = removeEntry2(leftChild, key);
                 rootNode.setLeftChild(subtreeRoot);
-//                return rebalance(rootNode);
-//                rootNode.setLeftChild(rebalance(subtreeRoot));
             } else {
                 BinaryNode<K, V> rightChild = rootNode.getRightChild();
-                BinaryNode<K, V> subtreeRoot = removeEntry(rightChild, entry, oldEntry);
+                BinaryNode<K, V> subtreeRoot = removeEntry2(rightChild, key);
                 rootNode.setRightChild(subtreeRoot);
-//                return rebalance(rootNode);
-//                rootNode.setRightChild(rebalance(subtreeRoot));
             }
         }
         return rootNode;
@@ -259,13 +317,13 @@ public class BST<K extends Comparable<? super K>,V> {
         // rootNode has two children
         if (rootNode.hasLeftChild() && rootNode.hasRightChild() ) {
             // find largest entry in left subtree
-            BinaryNode<K, V> leftSubtreeRoot = rootNode.getLeftChild();
-            BinaryNode<K, V> largestNode = findLargest(leftSubtreeRoot);
+            BinaryNode<K, V> leftSubtreeOfRoot = rootNode.getLeftChild();
+            BinaryNode<K, V> largestNode = findLargest(leftSubtreeOfRoot);
 
             // replace entry in root
             rootNode.setEntry(largestNode.getEntry() );
             // remove node with largest entry in left subtree
-            rootNode.setLeftChild(removeLargest(leftSubtreeRoot) );
+            rootNode.setLeftChild(removeLargest(leftSubtreeOfRoot) );
             // removing may give an unbalanced tree
 //            return rebalance(rootNode);
         }
@@ -274,6 +332,7 @@ public class BST<K extends Comparable<? super K>,V> {
             rootNode = rootNode.getRightChild();
         } else {
             rootNode = rootNode.getLeftChild();
+//            rootNode.setEntry(null);
         } // if rootNode was a leaf, then it is now full
 
         return rootNode;
@@ -282,9 +341,13 @@ public class BST<K extends Comparable<? super K>,V> {
     private BinaryNode<K, V> removeLargest(BinaryNode<K, V> rootNode) {
         if (rootNode.hasRightChild() ) {
             BinaryNode<K, V> rightChild = rootNode.getRightChild();
+            // removes the largest rightchild of leftsubtree
+
             rightChild = removeLargest(rightChild);
             rootNode.setRightChild(rightChild);
         } else {
+//            rootNode.setEntry(null);
+//            rootNode = null;
             rootNode = rootNode.getLeftChild();
         }
         return rootNode;
@@ -312,6 +375,33 @@ public class BST<K extends Comparable<? super K>,V> {
             this.oldEntry = oldEntry;
         }
     }
+
+    private class NodePair<T> {
+        T first;
+        T second;
+
+        public NodePair (T first, T second) {
+            this.first = first;
+            this.second = second;
+        }
+
+        public T getFirst() {
+            return first;
+        }
+
+        public void setFirst(T first) {
+            this.first = first;
+        }
+
+        public T getSecond() {
+            return second;
+        }
+
+        public void setSecond(T second) {
+            this.second = second;
+        }
+    }
+
 
 
 //    public int getHeight(BinaryNode node) {

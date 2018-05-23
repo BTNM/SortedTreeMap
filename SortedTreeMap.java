@@ -131,8 +131,12 @@ public class SortedTreeMap<K extends Comparable<? super K>, V> implements ISorte
         if (!containsKey((K) key)) {
             throw new NoSuchElementException();
         }
+        BinaryNode<K, V> tempNode =  mainTree.removeOld2((K) key);
+
+        return tempNode.getEntry().value;
+
 //        return mainTree.remove2((K) key).getEntry().value;
-        return mainTree.remove3((K) key).getEntry().value;
+//        return mainTree.remove3((K) key).getEntry().value;
 
 //        BinaryNode<K, V> removed = removeRecursive(mainTree.getRootNode(), (K) key);
 //        return removed.getEntry().value;
@@ -319,51 +323,88 @@ public class SortedTreeMap<K extends Comparable<? super K>, V> implements ISorte
 
     @Override
     public Entry<K, V> lowerOrEqualEntry(K key) {
-        BinaryNode<K,V> prev = mainTree.getRootNode();
+//        BinaryNode<K,V> current = mainTree.getRootNode();
         BinaryNode<K,V> current = mainTree.getRootNode();
+        BinaryNode<K,V> prev = null;
+
+        if (current == null) {
+            return null;
+        }
 
 //        if (prev == null ) {
 //            return null;
 //        }
 
-//        while (current != null) {
-//            if (keyComparator.compare(key,current.getEntry().key) == 0) {
+        while (current != null) {
+            if (keyComparator.compare(key,current.getEntry().key) == 0) {
 //                System.out.println("found key:"+ current.getEntry().key);
-//                return current.getEntry();
-//            }
-//            else if (keyComparator.compare(key,current.getEntry().key) < 0) {
+                return current.getEntry();
+            }
+            else if (keyComparator.compare(key,current.getEntry().key) < 0) {
 //                System.out.println("prev key: "+current.getEntry().key);
-//                current = current.getLeftChild();
-//                System.out.println("current key: "+current.getEntry().key);
-//            }
-//
-//        }
-
-
-
-        while(current != null ) {
-            if (size() == 1) {
-                if (keyComparator.compare(key,current.getEntry().key) == 0) {
-                    return current.getEntry();
-                }
-                else if (keyComparator.compare(key,current.getEntry().key) < 0) {
-                    current = current.getLeftChild();
-                }
-            } else {
                 prev = current;
-                if (keyComparator.compare(key,current.getEntry().key) == 0) {
-                    return current.getEntry();
-                }
-                else if (keyComparator.compare(key,current.getEntry().key) < 0) {
-                    current = current.getLeftChild();
-                }
+//                System.out.println("prev now key: "+prev.getEntry().key);
+                current = current.getLeftChild();
+
+//                System.out.println("current key: "+current.getEntry().key);
+            } else if (keyComparator.compare(key,current.getEntry().key) > 0 ) {
+                prev = current;
+                current = current.getRightChild();
+            }
+
+        }
+//        System.out.println("finally prev: "+ prev.getEntry().key);
+//        System.out.println("finally current: "+ current.getEntry().key);
+        current = mainTree.getRootNode();
+        while (current != null) {
+             if (keyComparator.compare(key,current.getEntry().key) < 0) {
+                current = current.getLeftChild();
+
+                getLowerThan(current, key);
+             } else if (keyComparator.compare(key,current.getEntry().key) > 0 ) {
+                 current = current.getRightChild();
+             }
+
+        }
+        return null;
+
+//        while(current != null ) {
+//            if (size() == 1) {
+//                if (keyComparator.compare(key,current.getEntry().key) == 0) {
+//                    return current.getEntry();
+//                }
+//                else if (keyComparator.compare(key,current.getEntry().key) < 0) {
+//                    current = current.getLeftChild();
+//                }
+//            } else {
+//                prev = current;
+//                if (keyComparator.compare(key,current.getEntry().key) == 0) {
+//                    return current.getEntry();
+//                }
+//                else if (keyComparator.compare(key,current.getEntry().key) < 0) {
+//                    current = current.getLeftChild();
+//                }
 //              else if (keyComparator.compare(key,current.getEntry().key) > 0) {
 //                  current = current.getRightChild();
 //              }
-            }
+//            }
+//        }
+
+//        return prev.getEntry();
+    }
+
+    private Entry<K,V> getLowerThan (BinaryNode<K,V> current, K key) {
+        // if key are bigger than node right child return right child
+        if (keyComparator.compare(key, current.getRightChild().getEntry().key) > 0) {
+            return current.getRightChild().getEntry();
+        }
+        // if key bigger less than node right child and bigger than left child
+        else if ( (keyComparator.compare(key, current.getRightChild().getEntry().key) < 0)  && ( keyComparator.compare(key, current.getLeftChild().getEntry().key) > 0)) {
+            return current.getLeftChild().getEntry();
+        } else {
+            return null;
         }
 
-        return prev.getEntry();
     }
 
 //    private BinaryNode<K,V> lowerOrEqualEntryRecursive (BinaryNode<K,V> root, K key) {
@@ -463,7 +504,7 @@ public class SortedTreeMap<K extends Comparable<? super K>, V> implements ISorte
         if (node != null) {
             removeIfTravese(node.getLeftChild(), p);
             if (p.test(node.getEntry().key, node.getEntry().value) ) {
-                mainTree.remove(node.getEntry());
+                mainTree.removeOld2(node.getEntry().key);
             }
             removeIfTravese(node.getRightChild(), p);
         }
