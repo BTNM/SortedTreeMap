@@ -243,7 +243,41 @@ public class BST<K extends Comparable<? super K>,V> {
 //
 //        return oldEntry.getOldEntry();
 //    }
-//
+
+    public Entry<K,V> remove22(K key) {
+        ReturnObject oldEntry = new ReturnObject(null);
+        BinaryNode<K, V> newRoot = removeEntry2(getRootNode(), key, oldEntry);
+        setRootNode(newRoot);
+//        setRootNode(rebalance(newRoot));
+
+        return oldEntry.getOldEntry();
+    }
+
+    private BinaryNode<K, V> removeEntry2(BinaryNode<K, V> rootNode, K key, ReturnObject oldEntry) {
+        if (rootNode != null) {
+            Entry<K,V> rootData = rootNode.getEntry();
+            int compared = key.compareTo(rootData.key);
+
+            if (compared == 0) {
+                oldEntry.setOldEntry(rootData);
+                rootNode = removeFromRoot(rootNode);
+            } else if (compared < 0) {
+                BinaryNode<K, V> leftChild = rootNode.getLeftChild();
+                BinaryNode<K, V> subtreeRoot = removeEntry2(leftChild, key, oldEntry);
+                rootNode.setLeftChild(subtreeRoot);
+//                return rebalance(rootNode);
+//                rootNode.setLeftChild(rebalance(subtreeRoot));
+            } else {
+                BinaryNode<K, V> rightChild = rootNode.getRightChild();
+                BinaryNode<K, V> subtreeRoot = removeEntry2(rightChild, key, oldEntry);
+                rootNode.setRightChild(subtreeRoot);
+//                return rebalance(rootNode);
+//                rootNode.setRightChild(rebalance(subtreeRoot));
+            }
+        }
+        return rootNode;
+    }
+
 //    private BinaryNode<K, V> removeEntry(BinaryNode<K, V> rootNode, Entry<K,V> entry, ReturnObject oldEntry) {
 //        if (rootNode != null) {
 //            Entry<K,V> rootData = rootNode.getEntry();
@@ -269,49 +303,49 @@ public class BST<K extends Comparable<? super K>,V> {
 //        return rootNode;
 //    }
 
-    public BinaryNode<K, V> removeOld2(K key) {
-        BinaryNode<K, V> newRoot = removeEntry2(getRootNode(), key);
-//        setRootNode(newRoot);
-        return newRoot;
-
-//        if (tempBinaryNode != null ) {
-//            return tempBinaryNode;
-//        } else {
-//            return null;
+//    public BinaryNode<K, V> removeOld2(K key) {
+//        BinaryNode<K, V> newRoot = removeEntry2(getRootNode(), key);
+////        setRootNode(newRoot);
+//        return newRoot;
+//
+////        if (tempBinaryNode != null ) {
+////            return tempBinaryNode;
+////        } else {
+////            return null;
+////        }
+//
+////        return tempBinaryNode != null ? tempBinaryNode : null;
+//    }
+//
+//    private BinaryNode<K, V> removeEntry2(BinaryNode<K, V> rootNode, K key) {
+//        if (rootNode != null) {
+//            Entry<K,V> rootData = rootNode.getEntry();
+//            Entry<K,V> removed;
+//            int compared = key.compareTo(rootData.key);
+//
+//            if (compared == 0) {
+////                tempBinaryNode.setEntry(rootData);
+////                NodePair<BinaryNode<K,V>> temp;
+//                removed = rootNode.getEntry();
+//                System.out.println(removed.key);
+//                rootNode = removeFromRoot(rootNode);
+//                System.out.println(rootNode.getEntry().key);
+////                if (rootNode != null) {
+////                    rebalance(rootNode);
+////                }
+//                return new BinaryNode<>(removed);
+//            } else if (compared < 0) {
+//                BinaryNode<K, V> leftChild = rootNode.getLeftChild();
+//                BinaryNode<K, V> subtreeRoot = removeEntry2(leftChild, key);
+//                rootNode.setLeftChild(subtreeRoot);
+//            } else {
+//                BinaryNode<K, V> rightChild = rootNode.getRightChild();
+//                BinaryNode<K, V> subtreeRoot = removeEntry2(rightChild, key);
+//                rootNode.setRightChild(subtreeRoot);
+//            }
 //        }
-
-//        return tempBinaryNode != null ? tempBinaryNode : null;
-    }
-
-    private BinaryNode<K, V> removeEntry2(BinaryNode<K, V> rootNode, K key) {
-        if (rootNode != null) {
-            Entry<K,V> rootData = rootNode.getEntry();
-            Entry<K,V> removed;
-            int compared = key.compareTo(rootData.key);
-
-            if (compared == 0) {
-//                tempBinaryNode.setEntry(rootData);
-//                NodePair<BinaryNode<K,V>> temp;
-                removed = rootNode.getEntry();
-                System.out.println(removed.key);
-                rootNode = removeFromRoot(rootNode);
-                System.out.println(rootNode.getEntry().key);
-//                if (rootNode != null) {
-//                    rebalance(rootNode);
-//                }
-                return new BinaryNode<>(removed);
-            } else if (compared < 0) {
-                BinaryNode<K, V> leftChild = rootNode.getLeftChild();
-                BinaryNode<K, V> subtreeRoot = removeEntry2(leftChild, key);
-                rootNode.setLeftChild(subtreeRoot);
-            } else {
-                BinaryNode<K, V> rightChild = rootNode.getRightChild();
-                BinaryNode<K, V> subtreeRoot = removeEntry2(rightChild, key);
-                rootNode.setRightChild(subtreeRoot);
-            }
-        }
-        return rootNode;
-    }
+//        return rootNode;
+//    }
 
     private BinaryNode<K, V> removeFromRoot(BinaryNode<K, V> rootNode) {
         // rootNode has two children
