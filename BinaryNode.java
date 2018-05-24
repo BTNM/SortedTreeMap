@@ -3,16 +3,9 @@ package Oblig4;
 public class BinaryNode<K,V> {
 //    private static final boolean RED   = true;
 //    private static final boolean BLACK = false;
-
     private Entry<K,V> entry;
     private BinaryNode<K,V> leftChild;
     private BinaryNode<K,V> rightChild;
-//    private boolean color; // color of parent link
-//    int balanceFactor = 0;
-
-//    public BinaryNode() {
-//        this(null);
-//    }
 
     public BinaryNode(Entry<K,V> newData) {
         this(newData,null, null);
@@ -22,14 +15,6 @@ public class BinaryNode<K,V> {
         leftChild = newLeftChild;
         rightChild = newRightChild;
     }
-    public BinaryNode(Entry<K,V>newData, BinaryNode<K,V> newLeftChild, BinaryNode<K,V> newRightChild, boolean newColor) {
-        entry = newData;
-        leftChild = newLeftChild;
-        rightChild = newRightChild;
-//        color = newColor;
-    }
-
-
 
     public Entry<K, V> getEntry() {
         return entry;

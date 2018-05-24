@@ -21,7 +21,7 @@ public class testTree  {
     @Test
     public void testRemove()
     {
-        bst.remove22(13);
+        bst.remove(13);
      //   assertEquals(1,bst.size());
         assertEquals(new Integer(12) ,bst.getRootNode().getEntry().key);
     }
